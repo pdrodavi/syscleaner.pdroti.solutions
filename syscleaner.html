@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SysCleaner — Limpeza e Otimização de Sistema</title>
+  <link rel="icon" type="image/x-icon" href="syscleanerlogomenor.ico"/>
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+
+  <!-- Material Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"/>
+
+  <!-- Material Web Components (MWC) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono&display=swap"/>
+
+  <!-- Material Design Colors CDN (via MDBootstrap palette) -->
+  <style>
+    :root {
+      --md-primary: #1d5ba3;
+      --md-primary-dark: #161f2c;
+      --md-primary-light: #0b3b66;
+      --md-accent: #00BCD4;
+      --md-accent-dark: #0097A7;
+      --md-surface: #FFFFFF;
+      --md-background: #F5F7FA;
+      --md-on-primary: #FFFFFF;
+      --md-text-primary: #212121;
+      --md-text-secondary: #757575;
+      --md-divider: #BDBDBD;
+      --md-success: #2E7D32;
+      --md-warning: #F57F17;
+      --md-error: #C62828;
+      --md-elevation-1: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+      --md-elevation-2: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+      --md-elevation-3: 0 10px 20px rgba(0,0,0,.19), 0 6px 6px rgba(0,0,0,.23);
+      --md-elevation-4: 0 14px 28px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--md-background);
+      color: var(--md-text-primary);
+      margin: 0;
+    }
+
+    /* ── APP BAR ── */
+    .app-bar {
+      background: var(--md-primary-dark);
+      box-shadow: var(--md-elevation-2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 16px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .app-bar .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .app-bar .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .app-bar .brand-icon .material-icons-round { color: #fff; font-size: 22px; }
+    .app-bar .brand-name {
+      font-size: 20px;
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: .25px;
+    }
+    .app-bar nav a {
+      color: rgba(255,255,255,.85);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      margin-left: 24px;
+      letter-spacing: .4px;
+      transition: color .2s;
+    }
+    .app-bar nav a:hover { color: #fff; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--md-primary-dark) 0%, var(--md-primary-dark) 10%, var(--md-primary-dark) 100%);
+      padding: 96px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: rgba(255,255,255,.04);
+      border-radius: 50%;
+      top: -180px;
+      right: -120px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      background: rgba(255,255,255,.04);
+      border-radius: 50%;
+      bottom: -120px;
+      left: -80px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      border-radius: 24px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 28px;
+      letter-spacing: .4px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      letter-spacing: -.5px;
+    }
+    .hero h1 strong { font-weight: 700; }
+    .hero p {
+      font-size: 18px;
+      color: rgba(255,255,255,.85);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+    .btn-md-primary {
+      background: #fff;
+      color: var(--md-primary);
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 1.25px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 4px;
+      padding: 14px 32px;
+      box-shadow: var(--md-elevation-2);
+      cursor: pointer;
+      transition: box-shadow .2s, transform .15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-md-primary:hover {
+      box-shadow: var(--md-elevation-3);
+      transform: translateY(-1px);
+      color: var(--md-primary-dark);
+    }
+    .btn-md-outline {
+      background: transparent;
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 1.25px;
+      text-transform: uppercase;
+      border: 2px solid rgba(255,255,255,.6);
+      border-radius: 4px;
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-md-outline:hover {
+      border-color: #fff;
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      margin-top: 64px;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .hero-stat .lbl {
+      font-size: 13px;
+      color: rgba(255,255,255,.7);
+      margin-top: 4px;
+      letter-spacing: .4px;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--md-primary);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 400;
+      color: var(--md-text-primary);
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+    .section-sub {
+      font-size: 16px;
+      color: var(--md-text-secondary);
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    /* ── MD CARD ── */
+    .md-card {
+      background: var(--md-surface);
+      border-radius: 8px;
+      box-shadow: var(--md-elevation-1);
+      transition: box-shadow .25s;
+      overflow: hidden;
+    }
+    .md-card:hover { box-shadow: var(--md-elevation-3); }
+
+    /* ── FEATURES ── */
+    .features { padding: 80px 0; }
+    .feature-card {
+      padding: 32px 28px;
+      height: 100%;
+    }
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .feature-icon .material-icons-round { font-size: 28px; }
+    .icon-blue { background: #E3F2FD; }
+    .icon-blue .material-icons-round { color: var(--md-primary); }
+    .icon-cyan { background: #E0F7FA; }
+    .icon-cyan .material-icons-round { color: var(--md-accent-dark); }
+    .icon-green { background: #E8F5E9; }
+    .icon-green .material-icons-round { color: var(--md-success); }
+    .icon-amber { background: #FFF8E1; }
+    .icon-amber .material-icons-round { color: var(--md-warning); }
+    .icon-purple { background: #EDE7F6; }
+    .icon-purple .material-icons-round { color: #6A1B9A; }
+    .icon-red { background: #FFEBEE; }
+    .icon-red .material-icons-round { color: var(--md-error); }
+    .feature-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: var(--md-text-primary);
+    }
+    .feature-desc {
+      font-size: 14px;
+      color: var(--md-text-secondary);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works { background: var(--md-surface); padding: 80px 0; }
+    .step-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--md-primary);
+      color: #fff;
+      font-size: 20px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-connector {
+      width: 2px;
+      height: 40px;
+      background: var(--md-primary-light);
+      margin: 4px 0 4px 23px;
+      opacity: .3;
+    }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      background: var(--md-primary);
+      padding: 56px 0;
+    }
+    .stat-item { text-align: center; padding: 16px; }
+    .stat-num {
+      font-size: 40px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .stat-unit { font-size: 24px; }
+    .stat-lbl {
+      font-size: 14px;
+      color: rgba(255,255,255,.75);
+      margin-top: 8px;
+      font-weight: 400;
+    }
+
+    /* ── PRICING ── */
+    .pricing { padding: 80px 0; }
+    .pricing-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .pricing-header {
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid var(--md-background);
+    }
+    .pricing-featured .pricing-header {
+      background: var(--md-primary);
+      color: #fff;
+    }
+    .pricing-featured .pricing-header .plan-name,
+    .pricing-featured .pricing-header .plan-price,
+    .pricing-featured .pricing-header .plan-period { color: #fff; }
+    .plan-name {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--md-text-secondary);
+      margin-bottom: 16px;
+    }
+    .plan-price {
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--md-text-primary);
+      line-height: 1;
+    }
+    .plan-price sup { font-size: 20px; font-weight: 400; vertical-align: top; margin-top: 8px; }
+    .plan-period {
+      font-size: 14px;
+      color: var(--md-text-secondary);
+      margin-top: 4px;
+    }
+    .pricing-body { padding: 24px 28px; flex: 1; }
+    .pricing-footer { padding: 0 28px 28px; }
+    .feature-list { list-style: none; padding: 0; margin: 0; }
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--md-text-secondary);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--md-background);
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-list .material-icons-round { font-size: 18px; color: var(--md-success); }
+    .feature-list .material-icons-round.miss { color: var(--md-divider); }
+    .btn-plan {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 4px;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 1.25px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: box-shadow .2s, background .2s;
+    }
+    .btn-plan-outline {
+      background: transparent;
+      border: 2px solid var(--md-primary);
+      color: var(--md-primary);
+    }
+    .btn-plan-outline:hover { background: #E3F2FD; }
+    .btn-plan-filled {
+      background: var(--md-primary);
+      color: #fff;
+      box-shadow: var(--md-elevation-2);
+    }
+    .btn-plan-filled:hover { background: var(--md-primary-dark); box-shadow: var(--md-elevation-3); }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: var(--md-surface); padding: 80px 0; }
+    .testimonial-card { padding: 28px; height: 100%; display: flex; flex-direction: column; }
+    .rating { color: #FDD835; margin-bottom: 16px; font-size: 18px; }
+    .testimonial-text {
+      font-size: 15px;
+      color: var(--md-text-secondary);
+      line-height: 1.7;
+      flex: 1;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .author-name { font-size: 14px; font-weight: 500; color: var(--md-text-primary); }
+    .author-role { font-size: 12px; color: var(--md-text-secondary); }
+
+    /* ── DOWNLOAD CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--md-primary-dark) 0%, var(--md-primary-light) 100%);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .cta-section p {
+      font-size: 16px;
+      color: rgba(255,255,255,.8);
+      max-width: 440px;
+      margin: 0 auto 40px;
+    }
+    .os-chips { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+    .os-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.9);
+      border-radius: 24px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0D1117;
+      color: rgba(255,255,255,.6);
+      padding: 48px 0 24px;
+      font-size: 14px;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .footer-brand-name { font-size: 18px; font-weight: 500; color: #fff; }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,.45); margin-bottom: 0; }
+    .footer-title { font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 16px; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { color: rgba(255,255,255,.6); text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-divider { border-color: rgba(255,255,255,.08); margin: 32px 0 20px; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,.35); }
+
+    /* ── CHIP / BADGE ── */
+    .md-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #E3F2FD;
+      color: var(--md-primary);
+      border-radius: 16px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .featured-badge {
+      background: #FFF8E1;
+      color: #E65100;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-left: 8px;
+    }
+
+    /* ── RESPONSIVE ── */
+    /* ── HAMBURGER ── */
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      flex-direction: column;
+      gap: 5px;
+      transition: background .2s;
+    }
+    .hamburger-btn:hover { background: rgba(255,255,255,.1); }
+    .hamburger-btn span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--md-primary-light);
+      border-radius: 2px;
+      transition: transform .3s ease, opacity .3s ease;
+      transform-origin: center;
+    }
+    /* Animação X */
+    .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Drawer mobile */
+    .mobile-drawer {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 99;
+    }
+    .mobile-drawer.open { display: block; }
+    .drawer-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      animation: fadeIn .25s ease;
+    }
+    .drawer-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 260px;
+      height: 100%;
+      background: var(--md-primary-dark);
+      box-shadow: -4px 0 24px rgba(0,0,0,.35);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0 24px;
+      animation: slideIn .25s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+    .drawer-panel a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: rgba(255,255,255,.85);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 24px;
+      letter-spacing: .3px;
+      transition: background .2s, color .2s;
+      border-radius: 0;
+    }
+    .drawer-panel a:hover,
+    .drawer-panel a:focus { background: rgba(255,255,255,.08); color: #fff; }
+    .drawer-panel a .material-icons-round { font-size: 20px; color: var(--md-primary); }
+    .drawer-divider {
+      height: 1px;
+      background: rgba(255,255,255,.08);
+      margin: 8px 16px;
+    }
+    .drawer-download {
+      margin: 16px 16px 0;
+      background: var(--md-primary);
+      color: #fff !important;
+      border-radius: 4px !important;
+      justify-content: center !important;
+      font-weight: 700 !important;
+      letter-spacing: 1px !important;
+      text-transform: uppercase;
+      font-size: 13px !important;
+      padding: 14px 24px !important;
+    }
+    .drawer-download:hover { background: var(--md-primary-dark) !important; }
+    .drawer-download .material-icons-round { color: #fff !important; }
+
+    @media (max-width: 767.98px) {
+      .app-bar nav { display: none; }
+      .hamburger-btn { display: flex; }
+      .hero { padding: 64px 16px 56px; }
+      .hero-stats { gap: 32px; }
+      .features, .how-it-works, .pricing, .testimonials { padding: 56px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── APP BAR ── -->
+<header class="app-bar">
+  <a href="#" class="brand">
+    <img src="syscleanerlogo.png" alt="SysCleaner ícone" style="width: 20%; padding:2px;"/>
+  </a>
+
+  <!-- Nav desktop -->
+  <nav>
+    <a href="#home">Início</a>
+    <a href="#funcionalidades">Funcionalidades</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#como-funciona">Como Funciona</a>
+    <a href="#download">Download</a>
+  </nav>
+
+  <!-- Botão hamburguer (mobile) -->
+  <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<!-- ── DRAWER MOBILE ── -->
+<div class="mobile-drawer" id="mobileDrawer" role="dialog" aria-label="Menu de navegação">
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <nav class="drawer-panel text-left" role="navigation">
+    <a href="#home" class="drawer-link">
+      <span class="material-icons-round">home</span>Início
+    </a>
+    <a href="#funcionalidades" class="drawer-link">
+      <span class="material-icons-round">cleaning_services</span>Funcionalidades
+    </a>
+    <a href="#como-funciona" class="drawer-link">
+      <span class="material-icons-round">play_circle</span>Como Funciona
+    </a>
+    <a href="#roadmap" class="drawer-link">
+      <span class="material-icons-round">rocket_launch</span>Roadmap
+    </a>
+    <div class="drawer-divider"></div>
+    <a href="#download" class="drawer-link drawer-download">
+      <span class="material-icons-round">download</span>Download
+    </a>
+  </nav>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div style="margin-bottom:32px;">
+    <img src="syscleanerlogo.png" alt="SysCleaner logo" style="width: 30%;"/>
+  </div>
+  <div class="hero-badge">
+    <span class="material-icons-round" style="font-size:14px;">verified</span>
+    Versão 1.0.0 — Lançada
+  </div>
+  <h1>Seu PC <strong>mais rápido</strong>,<br/>mais limpo, mais eficiente.</h1>
+  <p>SysCleaner remove arquivos inúteis e otimiza o sistema.</p>
+  <!--<p>SysCleaner remove arquivos inúteis, otimiza a memória e protege sua privacidade com apenas um clique.</p>-->
+  <div class="d-flex gap-3 justify-content-center flex-wrap">
+    <a href="#download" class="btn-md-primary">
+      <span class="material-icons-round" style="font-size:20px;">download</span>
+      Download grátis
+    </a>
+    <a href="#como-funciona" class="btn-md-outline">
+      <span class="material-icons-round" style="font-size:20px;">play_circle</span>
+      Ver demonstração
+    </a>
+  </div>
+
+  <!--
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">4,2M+</div>
+      <div class="lbl">Downloads</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">98%</div>
+      <div class="lbl">Avaliação positiva</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">15 GB</div>
+      <div class="lbl">Espaço liberado em média</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">3x</div>
+      <div class="lbl">Mais performance</div>
+    </div>
+  </div>-->
+
+</section>
+
+<!-- ── FUNCIONALIDADES ── -->
+<section class="features" id="funcionalidades">
+  <div class="container">
+    <div class="row mb-5 text-center justify-content-center">
+      <div class="col-lg-6">
+        <p class="section-eyebrow">Funcionalidades</p>
+        <h2 class="section-title">Tudo que você precisa<br/>para um sistema saudável</h2>
+        <p class="section-sub mx-auto">Ferramentas poderosas integradas em uma interface simples e leve. Construído em Visual Basic.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="md-card feature-card h-100">
+          <div class="feature-icon icon-blue"><span class="material-icons-round">cleaning_services</span></div>
+          <div class="feature-title">Limpeza Básica</div>
+          <p class="feature-desc">Remove cache, arquivos temporários, logs e resíduos de instalações com varredura inteligente de múltiplas camadas.</p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="md-card feature-card h-100">
+          <div class="feature-icon icon-blue"><span class="material-icons-round">cleaning_services</span></div>
+          <div class="feature-title">Limpeza Profunda</div>
+          <p class="feature-desc">Realiza limpeza de Atualizações do Windows, Cache, Arquivos Antigos e temporários, Windows.old e instalaçoes antigas. Inclui o uso do DISM e SFC, garantindo a integridade do sistema operacional.</p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="md-card feature-card h-100">
+          <div class="feature-icon icon-amber"><span class="material-icons-round">rocket_launch</span></div>
+          <div class="feature-title">Otimização de Sistema</div>
+          <p class="feature-desc">Realiza a Fragmentação e compactação de arquivos, melhorando o desempenho geral do sistema.</p>
+        </div>
+      </div>
+
+      <!--
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="md-card feature-card h-100">
+          <div class="feature-icon icon-cyan"><span class="material-icons-round">speed</span></div>
+          <div class="feature-title">Otimização de RAM</div>
+          <p class="feature-desc">Libera memória ocupada por processos ociosos e ajusta prioridades para maximizar a velocidade de resposta do sistema.</p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="md-card feature-card h-100">
+          <div class="feature-icon icon-green"><span class="material-icons-round">security</span></div>
+          <div class="feature-title">Proteção de Privacidade</div>
+          <p class="feature-desc">Apaga histórico de navegação, cookies rastreadores, dados de formulários e atividades recentes do sistema operacional.</p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="md-card feature-card h-100">
+          <div class="feature-icon icon-purple"><span class="material-icons-round">find_in_page</span></div>
+          <div class="feature-title">Localizador de Duplicatas</div>
+          <p class="feature-desc">Identifica e remove arquivos duplicados espalhados pelo HD, recuperando espaço precioso com segurança total.</p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="md-card feature-card h-100">
+          <div class="feature-icon icon-red"><span class="material-icons-round">settings_suggest</span></div>
+          <div class="feature-title">Reparo de Registro</div>
+          <p class="feature-desc">Detecta e corrige entradas inválidas, quebradas ou obsoletas no registro do Windows, evitando travamentos e erros.</p>
+        </div>
+      </div>
+      -->
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES FUTURAS ── -->
+<section style="background: var(--md-surface); padding: 80px 0;" id="roadmap">
+  <div class="container">
+    <div class="row justify-content-center text-center mb-5">
+      <div class="col-lg-6">
+        <p class="section-eyebrow">Roadmap</p>
+        <h2 class="section-title">O que vem por aí</h2>
+        <p class="section-sub mx-auto">Funcionalidades planejadas para as próximas versões do SysCleaner. Acompanhe a evolução!</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+
+        <!-- Item -->
+        <div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:32px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--md-accent); box-shadow:0 0 0 4px rgba(0,188,212,.2); margin-top:3px;"></div>
+            <div style="width:2px; flex:1; min-height:40px; background:linear-gradient(to bottom, var(--md-accent), rgba(0,188,212,.15)); margin-top:6px;"></div>
+          </div>
+          <div style="padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span class="material-icons-round" style="color:var(--md-accent); font-size:20px;">lock_open</span>
+              <span style="font-size:16px; font-weight:500; color:var(--md-text-primary);">Desbloquear Itens Ocultos do Windows e Menus Úteis</span>
+              <span style="background:#E0F7FA; color:#00838F; font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; letter-spacing:.5px;">EM BREVE</span>
+            </div>
+            <p style="font-size:14px; color:var(--md-text-secondary); margin:0; line-height:1.65;">Acesse e ative configurações ocultas do Windows, menus avançados e opções úteis que ficam escondidas por padrão no sistema operacional.</p>
+          </div>
+        </div>
+
+        <!-- Item -->
+        <div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:32px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--md-accent); box-shadow:0 0 0 4px rgba(0,188,212,.2); margin-top:3px;"></div>
+            <div style="width:2px; flex:1; min-height:40px; background:linear-gradient(to bottom, var(--md-accent), rgba(0,188,212,.15)); margin-top:6px;"></div>
+          </div>
+          <div style="padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span class="material-icons-round" style="color:var(--md-accent); font-size:20px;">security</span>
+              <span style="font-size:16px; font-weight:500; color:var(--md-text-primary);">Proteção de Privacidade</span>
+              <span style="background:#E0F7FA; color:#00838F; font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; letter-spacing:.5px;">EM BREVE</span>
+            </div>
+            <p style="font-size:14px; color:var(--md-text-secondary); margin:0; line-height:1.65;">Apaga histórico de navegação, cookies rastreadores e atividades recentes do sistema para garantir sua privacidade.</p>
+          </div>
+        </div>
+
+        <!-- Item -->
+        <div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:32px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--md-accent); box-shadow:0 0 0 4px rgba(0,188,212,.2); margin-top:3px;"></div>
+            <div style="width:2px; flex:1; min-height:40px; background:linear-gradient(to bottom, var(--md-accent), rgba(0,188,212,.15)); margin-top:6px;"></div>
+          </div>
+          <div style="padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span class="material-icons-round" style="color:var(--md-accent); font-size:20px;">speed</span>
+              <span style="font-size:16px; font-weight:500; color:var(--md-text-primary);">Otimização de RAM</span>
+              <span style="background:#E0F7FA; color:#00838F; font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; letter-spacing:.5px;">EM BREVE</span>
+            </div>
+            <p style="font-size:14px; color:var(--md-text-secondary); margin:0; line-height:1.65;">Libera memória ocupada por processos ociosos e ajusta prioridades para maximizar a velocidade do sistema.</p>
+          </div>
+        </div>
+
+        <!-- Item -->
+        <div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:32px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--md-accent); box-shadow:0 0 0 4px rgba(0,188,212,.2); margin-top:3px;"></div>
+            <div style="width:2px; flex:1; min-height:40px; background:linear-gradient(to bottom, var(--md-accent), rgba(0,188,212,.15)); margin-top:6px;"></div>
+          </div>
+          <div style="padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span class="material-icons-round" style="color:var(--md-accent); font-size:20px;">rocket_launch</span>
+              <span style="font-size:16px; font-weight:500; color:var(--md-text-primary);">Gerenciador de Inicialização</span>
+              <span style="background:#FFF8E1; color:#E65100; font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; letter-spacing:.5px;">PLANEJADO</span>
+            </div>
+            <p style="font-size:14px; color:var(--md-text-secondary); margin:0; line-height:1.65;">Controle quais programas iniciam com o Windows e reduza o tempo de boot desativando itens desnecessários.</p>
+          </div>
+        </div>
+
+        <!-- Item -->
+        <div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:32px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--md-accent); box-shadow:0 0 0 4px rgba(0,188,212,.2); margin-top:3px;"></div>
+            <div style="width:2px; flex:1; min-height:40px; background:linear-gradient(to bottom, var(--md-accent), rgba(0,188,212,.15)); margin-top:6px;"></div>
+          </div>
+          <div style="padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span class="material-icons-round" style="color:var(--md-accent); font-size:20px;">find_in_page</span>
+              <span style="font-size:16px; font-weight:500; color:var(--md-text-primary);">Localizador de Duplicatas</span>
+              <span style="background:#FFF8E1; color:#E65100; font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; letter-spacing:.5px;">PLANEJADO</span>
+            </div>
+            <p style="font-size:14px; color:var(--md-text-secondary); margin:0; line-height:1.65;">Identifica e remove arquivos duplicados espalhados pelo HD, recuperando espaço com segurança total.</p>
+          </div>
+        </div>
+
+        <!-- Item -->
+        <div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:32px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--md-accent); box-shadow:0 0 0 4px rgba(0,188,212,.2); margin-top:3px;"></div>
+            <div style="width:2px; flex:1; min-height:40px; background:linear-gradient(to bottom, var(--md-accent), rgba(0,188,212,.15)); margin-top:6px;"></div>
+          </div>
+          <div style="padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span class="material-icons-round" style="color:var(--md-accent); font-size:20px;">settings_suggest</span>
+              <span style="font-size:16px; font-weight:500; color:var(--md-text-primary);">Reparo de Registro</span>
+              <span style="background:#FFF8E1; color:#E65100; font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; letter-spacing:.5px;">PLANEJADO</span>
+            </div>
+            <p style="font-size:14px; color:var(--md-text-secondary); margin:0; line-height:1.65;">Detecta e corrige entradas inválidas ou obsoletas no registro do Windows, evitando travamentos e erros.</p>
+          </div>
+        </div>
+
+        <!-- Item (último — sem linha abaixo) -->
+        <div style="display:flex; align-items:flex-start; gap:20px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--md-success); box-shadow:0 0 0 4px rgba(46,125,50,.2); margin-top:3px; display:flex; align-items:center; justify-content:center;">
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span class="material-icons-round" style="color:var(--md-success); font-size:20px;">check_circle</span>
+              <span style="font-size:16px; font-weight:500; color:var(--md-text-primary); text-decoration: line-through; opacity:.6;">Agendamento Automático</span>
+              <span style="background:#E8F5E9; color:#2E7D32; font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; letter-spacing:.5px;">✓ IMPLEMENTADO</span>
+            </div>
+            <p style="font-size:14px; color:var(--md-text-secondary); margin:0; line-height:1.65;">Configure limpezas automáticas em horários programados, sem precisar abrir o aplicativo manualmente.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMO FUNCIONA ── -->
+<section class="how-it-works" id="como-funciona">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <p class="section-eyebrow">Como Funciona</p>
+        <h2 class="section-title">Duas etapas para um PC impecável</h2>
+        <p class="section-sub mb-4">Sem configurações complexas. O SysCleaner analisa, reporta e age com transparência total.</p>
+
+        <div class="d-flex gap-3 mb-3 align-items-start">
+          <div>
+            <div class="step-number">1</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="pt-2">
+            <div class="fw-medium mb-1" style="font-size:16px;">Análise Completa</div>
+            <p style="font-size:14px;color:var(--md-text-secondary);margin:0;line-height:1.6;">O SysCleaner varre todo o sistema em segundos e mapeia exatamente o que pode ser limpo ou otimizado.</p>
+          </div>
+        </div>
+
+        <!--
+        <div class="d-flex gap-3 mb-3 align-items-start">
+          <div>
+            <div class="step-number">2</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="pt-2">
+            <div class="fw-medium mb-1" style="font-size:16px;">Relatório Detalhado</div>
+            <p style="font-size:14px;color:var(--md-text-secondary);margin:0;line-height:1.6;">Você vê exatamente quais arquivos serão removidos, quanto espaço será liberado e qual o impacto esperado.</p>
+          </div>
+        </div>
+        -->
+
+        <div class="d-flex gap-3 align-items-start">
+          <div>
+            <div class="step-number">2</div>
+          </div>
+          <div class="pt-2">
+            <div class="fw-medium mb-1" style="font-size:16px;">Limpeza com 1 Clique</div>
+            <p style="font-size:14px;color:var(--md-text-secondary);margin:0;line-height:1.6;">Confirme e o SysCleaner executa tudo de forma segura.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <!-- Mock da interface do SysCleaner -->
+        <div class="md-card" style="overflow:hidden;">
+          <!-- titlebar -->
+          <div style="background:var(--md-primary);display:flex;align-items:center;gap:12px;">
+            <img src="syscleanerprint.png"/>
+            <!--<span style="color:#fff;font-weight:500;font-size:15px;">SysCleaner 3.2</span>
+            <div style="margin-left:auto;display:flex;gap:6px;">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3);"></div>
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3);"></div>
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3);"></div>
+            </div>-->
+          </div>
+          
+          <!-- body -->
+          
+          <!--
+          <div style="padding:24px;background:#FAFAFA;">
+            
+            <div class="row g-3 mb-4">
+              <div class="col-4">
+                <div style="background:#fff;border-radius:8px;box-shadow:var(--md-elevation-1);padding:16px;text-align:center;">
+                  <span class="material-icons-round" style="color:var(--md-primary);font-size:28px;">storage</span>
+                  <div style="font-size:20px;font-weight:700;color:var(--md-text-primary);margin:4px 0;">14.3 GB</div>
+                  <div style="font-size:11px;color:var(--md-text-secondary);">A liberar</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div style="background:#fff;border-radius:8px;box-shadow:var(--md-elevation-1);padding:16px;text-align:center;">
+                  <span class="material-icons-round" style="color:var(--md-success);font-size:28px;">memory</span>
+                  <div style="font-size:20px;font-weight:700;color:var(--md-text-primary);margin:4px 0;">2.1 GB</div>
+                  <div style="font-size:11px;color:var(--md-text-secondary);">RAM disponível</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div style="background:#fff;border-radius:8px;box-shadow:var(--md-elevation-1);padding:16px;text-align:center;">
+                  <span class="material-icons-round" style="color:var(--md-warning);font-size:28px;">warning</span>
+                  <div style="font-size:20px;font-weight:700;color:var(--md-text-primary);margin:4px 0;">247</div>
+                  <div style="font-size:11px;color:var(--md-text-secondary);">Problemas</div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background:#fff;border-radius:8px;box-shadow:var(--md-elevation-1);padding:16px 20px;">
+              <div style="font-size:13px;font-weight:500;margin-bottom:14px;color:var(--md-text-primary);">Resultado da Varredura</div>
+              <div class="mb-3">
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--md-text-secondary);margin-bottom:6px;"><span>Cache do Sistema</span><span>5.8 GB</span></div>
+                <div style="height:6px;background:#E3F2FD;border-radius:3px;"><div style="width:72%;height:100%;background:var(--md-primary);border-radius:3px;"></div></div>
+              </div>
+              <div class="mb-3">
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--md-text-secondary);margin-bottom:6px;"><span>Arquivos Temporários</span><span>4.2 GB</span></div>
+                <div style="height:6px;background:#E8F5E9;border-radius:3px;"><div style="width:55%;height:100%;background:var(--md-success);border-radius:3px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--md-text-secondary);margin-bottom:6px;"><span>Navegadores</span><span>4.3 GB</span></div>
+                <div style="height:6px;background:#FFF8E1;border-radius:3px;"><div style="width:44%;height:100%;background:var(--md-warning);border-radius:3px;"></div></div>
+              </div>
+            </div>
+            
+            <div style="margin-top:16px;text-align:center;">
+              <div style="display:inline-flex;align-items:center;gap:8px;background:var(--md-primary);color:#fff;padding:12px 32px;border-radius:4px;font-weight:500;font-size:14px;letter-spacing:1px;box-shadow:var(--md-elevation-2);">
+                <span class="material-icons-round" style="font-size:18px;">cleaning_services</span>
+                LIMPAR AGORA
+              </div>
+            </div>
+          </div>-->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS STRIP ── -->
+ <!--
+<section class="stats-strip">
+  <div class="container">
+    <div class="row g-0">
+      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">4,2<span class="stat-unit">M</span></div><div class="stat-lbl">Usuários ativos</div></div></div>
+      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">98<span class="stat-unit">%</span></div><div class="stat-lbl">Aprovação nas lojas</div></div></div>
+      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">15<span class="stat-unit">GB</span></div><div class="stat-lbl">Liberados em média</div></div></div>
+      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">0,3<span class="stat-unit">s</span></div><div class="stat-lbl">Tempo de análise</div></div></div>
+    </div>
+  </div>
+</section>-->
+
+<!-- ── PREÇOS ── -->
+ <!--
+<section class="pricing" id="precos">
+  <div class="container">
+    <div class="row mb-5 text-center justify-content-center">
+      <div class="col-lg-6">
+        <p class="section-eyebrow">Planos</p>
+        <h2 class="section-title">Escolha o plano ideal</h2>
+        <p class="section-sub mx-auto">Comece gratuitamente e faça upgrade quando precisar de mais poder.</p>
+      </div>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-12 col-md-4">
+        <div class="md-card pricing-card">
+          <div class="pricing-header">
+            <div class="plan-name">Free</div>
+            <div class="plan-price"><sup>R$</sup>0</div>
+            <div class="plan-period">para sempre</div>
+          </div>
+          <div class="pricing-body">
+            <ul class="feature-list">
+              <li><span class="material-icons-round">check_circle</span>Limpeza básica de sistema</li>
+              <li><span class="material-icons-round">check_circle</span>Varredura de cache</li>
+              <li><span class="material-icons-round">check_circle</span>Relatório simples</li>
+              <li><span class="material-icons-round miss">remove_circle_outline</span>Proteção de privacidade</li>
+              <li><span class="material-icons-round miss">remove_circle_outline</span>Otimização de RAM</li>
+              <li><span class="material-icons-round miss">remove_circle_outline</span>Suporte prioritário</li>
+            </ul>
+          </div>
+          <div class="pricing-footer">
+            <button class="btn-plan btn-plan-outline">Baixar grátis</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="md-card pricing-card pricing-featured" style="box-shadow:var(--md-elevation-4);">
+          <div class="pricing-header">
+            <div class="plan-name d-flex align-items-center">PRO <span class="featured-badge ms-2">POPULAR</span></div>
+            <div class="plan-price"><sup>R$</sup>19<small style="font-size:16px;">,90</small></div>
+            <div class="plan-period">por mês</div>
+          </div>
+          <div class="pricing-body">
+            <ul class="feature-list">
+              <li><span class="material-icons-round">check_circle</span>Tudo do plano Free</li>
+              <li><span class="material-icons-round">check_circle</span>Proteção de privacidade</li>
+              <li><span class="material-icons-round">check_circle</span>Otimização de RAM</li>
+              <li><span class="material-icons-round">check_circle</span>Localizador de duplicatas</li>
+              <li><span class="material-icons-round">check_circle</span>Agendamento automático</li>
+              <li><span class="material-icons-round miss">remove_circle_outline</span>Suporte 24h dedicado</li>
+            </ul>
+          </div>
+          <div class="pricing-footer">
+            <button class="btn-plan btn-plan-filled">Assinar Pro</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="md-card pricing-card">
+          <div class="pricing-header">
+            <div class="plan-name">Business</div>
+            <div class="plan-price"><sup>R$</sup>79</div>
+            <div class="plan-period">por mês / 5 PCs</div>
+          </div>
+          <div class="pricing-body">
+            <ul class="feature-list">
+              <li><span class="material-icons-round">check_circle</span>Tudo do plano Pro</li>
+              <li><span class="material-icons-round">check_circle</span>5 licenças incluídas</li>
+              <li><span class="material-icons-round">check_circle</span>Painel de gerenciamento</li>
+              <li><span class="material-icons-round">check_circle</span>Relatórios exportáveis</li>
+              <li><span class="material-icons-round">check_circle</span>Suporte 24h dedicado</li>
+              <li><span class="material-icons-round">check_circle</span>Onboarding personalizado</li>
+            </ul>
+          </div>
+          <div class="pricing-footer">
+            <button class="btn-plan btn-plan-outline">Falar com vendas</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>-->
+
+<!-- ── DEPOIMENTOS ── -->
+ <!--
+<section class="testimonials" id="depoimentos">
+  <div class="container">
+    <div class="row mb-5 text-center justify-content-center">
+      <div class="col-lg-6">
+        <p class="section-eyebrow">Depoimentos</p>
+        <h2 class="section-title">O que nossos usuários dizem</h2>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-12 col-md-4">
+        <div class="md-card testimonial-card">
+          <div class="rating">★★★★★</div>
+          <p class="testimonial-text">"Meu notebook que estava quase inutilizável voltou a funcionar perfeitamente. Liberou 12 GB de uma vez! Recomendo demais."</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background:#E3F2FD;color:var(--md-primary);">MS</div>
+            <div>
+              <div class="author-name">Marcos Silva</div>
+              <div class="author-role">Designer Gráfico · São Paulo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="md-card testimonial-card">
+          <div class="rating">★★★★★</div>
+          <p class="testimonial-text">"Uso o SysCleaner em toda a nossa equipe de TI. O painel Business é excelente para monitorar 20 máquinas ao mesmo tempo."</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background:#E8F5E9;color:var(--md-success);">AR</div>
+            <div>
+              <div class="author-name">Ana Ribeiro</div>
+              <div class="author-role">Gerente de TI · Fortaleza</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="md-card testimonial-card">
+          <div class="rating">★★★★★</div>
+          <p class="testimonial-text">"Interface linda, rápida e nunca tive nenhum problema com perda de dados. O modo de backup automático me dá total segurança."</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background:#FFF8E1;color:#E65100;">RL</div>
+            <div>
+              <div class="author-name">Rafael Lima</div>
+              <div class="author-role">Desenvolvedor · Recife</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>-->
+
+<!-- ── CTA DOWNLOAD ── -->
+<section class="cta-section" id="download">
+  <h2>Baixe agora <strong>grátis!</strong></h2>
+  <p>Disponível para Windowss</p>
+  <div class="d-flex gap-3 justify-content-center flex-wrap">
+    <a href="#" class="btn-md-primary">
+      <span class="material-icons-round" style="font-size:20px;">download</span>
+      Download Gratuito
+    </a>
+  </div>
+  <div class="os-chips">
+    <span class="os-chip"><span class="material-icons-round" style="font-size:16px;">laptop_windows</span>Windows 11 / 10 / 8 / 7</span>
+    <!--<span class="os-chip"><span class="material-icons-round" style="font-size:16px;">laptop_mac</span>macOS 12+</span>
+    <span class="os-chip"><span class="material-icons-round" style="font-size:16px;">computer</span>Linux (Ubuntu/Debian)</span>-->
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-12 col-md-4">
+        <div class="footer-brand">
+          <img src="data:image/png;base64,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" alt="SysCleaner" style="width:36px;height:36px;object-fit:contain;"/>
+          <span class="footer-brand-name">SysCleaner</span>
+        </div>
+        <p class="footer-tagline">Limpeza inteligente.<br/>Performance real.</p>
+      </div>
+      <div class="col-6 col-md-2 offset-md-2">
+        <div class="footer-title">Produto</div>
+        <ul class="footer-links">
+          <li><a href="#">Funcionalidades</a></li>
+          <li><a href="#">Features Novas</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="footer-title">Desenvolvedor</div>
+        <ul class="footer-links">
+          <li><a href="#">Site</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </div>
+      <!--
+      <div class="col-6 col-md-2">
+        <div class="footer-title">Suporte</div>
+        <ul class="footer-links">
+          <li><a href="#">Central de ajuda</a></li>
+          <li><a href="#">Documentação</a></li>
+          <li><a href="#">Status do serviço</a></li>
+          <li><a href="#">Comunidade</a></li>
+        </ul>
+      </div>-->
+    </div>
+    <hr class="footer-divider"/>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 SysCleaner. Todos os direitos reservados.</span>
+      <div style="display:flex;gap:20px;">
+        <a href="#" style="color:rgba(255,255,255,.35);font-size:12px;text-decoration:none;">Privacidade</a>
+        <a href="#" style="color:rgba(255,255,255,.35);font-size:12px;text-decoration:none;">Termos de Uso</a>
+        <a href="#" style="color:rgba(255,255,255,.35);font-size:12px;text-decoration:none;">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── Smooth scroll ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // ── Hamburger / Drawer ──
+  const btn      = document.getElementById('hamburgerBtn');
+  const drawer   = document.getElementById('mobileDrawer');
+  const backdrop = document.getElementById('drawerBackdrop');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', () => {
+    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+
+  // Fechar ao clicar no backdrop
+  backdrop.addEventListener('click', closeDrawer);
+
+  // Fechar ao clicar em qualquer link do drawer
+  document.querySelectorAll('.drawer-link').forEach(link => {
+    link.addEventListener('click', closeDrawer);
+  });
+
+  // Fechar com ESC
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  // Fechar drawer ao redimensionar para desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 767) closeDrawer();
+  });
+</script>
+</body>
+</html>
